@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Turn PDF books into reflowable EPUBs with real chapters, clean paragraphs and linked notes." />
+        <meta name="theme-color" content="#3b5bff" />
+        <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Noto+Sans+Georgian:wght@400;500;600;700&family=Noto+Serif+Georgian:wght@400;700&display=swap">
+
+        <title>Bookflow</title>
+
+        <!-- Set the theme before React loads, so a dark page never flashes white -->
+        <script>
+            try {
+                var theme = localStorage.getItem('theme')
+                    || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                var lang = localStorage.getItem('lang');
+                if (lang) document.documentElement.lang = lang;
+            } catch (e) {}
+        </script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run Bookflow.</noscript>
+        <div id="root"></div>
+    </body>
+</html>

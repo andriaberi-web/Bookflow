@@ -1,0 +1,17 @@
+.bf-footer {
+    background: var(--bf-surface);
+    border-top: 1px solid var(--bf-line);
+    color: var(--bf-muted);
+
+    .bf-display {
+        color: var(--bf-text);
+    }
+
+    a {
+        color: var(--bf-text);
+    }
+}
+
+.bf-version {
+    font-variant-numeric: tabular-nums;
+}
