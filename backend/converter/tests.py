@@ -31,6 +31,12 @@ def make_pdf(chapters=2) -> bytes:
     return data
 
 
+def cover_image(name="cover.png"):
+    pixmap = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 60, 90), False)
+    pixmap.clear_with(200)
+    return SimpleUploadedFile(name, pixmap.tobytes("png"), "image/png")
+
+
 def upload(name="book.pdf", data=None):
     return SimpleUploadedFile(name, make_pdf() if data is None else data, "application/pdf")
 
@@ -97,3 +103,166 @@ class ConversionTests(TestCase):
     def test_csrf_endpoint_sets_the_cookie(self):
         response = self.client.get("/api/convert/csrf")
         self.assertIn("csrftoken", response.cookies)
+
+
+@override_settings(MEDIA_ROOT=MEDIA, CONVERTER_BACKGROUND=False)
+class EditorTests(TestCase):
+    def setUp(self):
+        self.id = self.client.post("/api/convert/", {"pdf": upload("My Book.pdf")}).json()["id"]
+
+    def get_book(self):
+        return self.client.get(f"/api/convert/{self.id}/book").json()["book"]
+
+    def put_book(self, book):
+        return self.client.put(f"/api/convert/{self.id}/book", book, content_type="application/json")
+
+    def test_the_editor_gets_the_book(self):
+        response = self.client.get(f"/api/convert/{self.id}/book")
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["name"], "My Book")
+        self.assertEqual(data["pages"], 2)
+        self.assertTrue(data["book"]["blocks"])
+
+    def test_an_edit_is_saved(self):
+        book = self.get_book()
+        book["metadata"]["title"] = "A New Title"
+
+        response = self.put_book(book)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["problems"], [])
+        self.assertEqual(self.get_book()["metadata"]["title"], "A New Title")
+
+    def test_a_book_that_cant_be_written_says_why(self):
+        book = self.get_book()
+        for block in book["blocks"]:
+            block["include"] = False
+
+        problems = self.put_book(book).json()["problems"]
+
+        self.assertTrue(any("nothing to write" in problem for problem in problems))
+        self.assertEqual(self.client.get(f"/api/convert/{self.id}/epub").status_code, 400)
+
+    def test_data_that_isnt_a_book_is_refused(self):
+        response = self.put_book({"version": 1, "blocks": "nope"})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "bad_book")
+
+        response = self.put_book([1, 2, 3])
+        self.assertEqual(response.json()["error"], "bad_book")
+
+    def test_the_epub_downloads_named_after_the_title(self):
+        book = self.get_book()
+        book["metadata"]["title"] = "Ünïcode Title"
+        self.put_book(book)
+
+        response = self.client.get(f"/api/convert/{self.id}/epub")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "application/epub+zip")
+        self.assertIn("%C3%9Cn%C3%AFcode%20Title.epub", response["Content-Disposition"])
+        self.assertEqual(response.content[:2], b"PK")
+
+    def test_a_page_of_the_pdf_comes_as_an_image(self):
+        response = self.client.get(f"/api/convert/{self.id}/pages/1.png?width=300")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "image/png")
+        self.assertEqual(response.content[:4], b"\x89PNG")
+
+    def test_a_page_outside_the_pdf_is_404(self):
+        response = self.client.get(f"/api/convert/{self.id}/pages/9.png")
+        self.assertEqual(response.status_code, 404)
+
+    def test_an_unreasonable_page_width_is_refused(self):
+        response = self.client.get(f"/api/convert/{self.id}/pages/1.png?width=99999")
+        self.assertEqual(response.status_code, 400)
+
+    def test_a_book_still_being_read_cant_be_edited(self):
+        Conversion.objects.filter(pk=self.id).update(status="reading")
+        response = self.client.get(f"/api/convert/{self.id}/book")
+        self.assertEqual(response.status_code, 409)
+
+    def test_the_cover_can_be_replaced_and_goes_into_the_epub(self):
+        response = self.client.post(f"/api/convert/{self.id}/cover", {"cover": cover_image()})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("cover.jpg", response.json()["cover_url"])
+        conversion = Conversion.objects.get(pk=self.id)
+        self.assertEqual(conversion.book["cover_source"], "cover from the given image")
+        epub = self.client.get(f"/api/convert/{self.id}/epub").content
+        self.assertIn(b"images/cover.jpg", epub)
+
+    def test_saving_the_book_keeps_the_new_cover(self):
+        old = self.get_book()
+        self.client.post(f"/api/convert/{self.id}/cover", {"cover": cover_image()})
+
+        self.put_book(old)  # an autosave from before the cover changed
+
+        self.assertEqual(Conversion.objects.get(pk=self.id).book["cover_source"], "cover from the given image")
+
+    def test_the_cover_can_be_removed(self):
+        response = self.client.delete(f"/api/convert/{self.id}/cover")
+
+        self.assertEqual(response.json(), {"cover_url": None})
+        conversion = Conversion.objects.get(pk=self.id)
+        self.assertFalse(conversion.cover)
+        self.assertEqual(conversion.book["cover_source"], "no cover")
+        self.assertNotIn(b"images/cover.jpg", self.client.get(f"/api/convert/{self.id}/epub").content)
+
+    def test_a_cover_must_be_an_image(self):
+        response = self.client.post(f"/api/convert/{self.id}/cover", {"cover": SimpleUploadedFile("c.png", b"not an image")})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "not_image")
+
+    def preview_url(self, block_id):
+        return self.client.get(f"/api/convert/{self.id}/preview?block={block_id}").json()["url"]
+
+    def test_each_block_previews_on_its_epub_page(self):
+        blocks = self.get_book()["blocks"]
+        headings = [block for block in blocks if block["type"] == "heading"]
+        self.assertEqual(len(headings), 2)
+        last_text = [block for block in blocks if block["type"] == "text"][-1]
+
+        self.assertTrue(self.preview_url(headings[0]["id"]).endswith("/EPUB/text/section-0001.xhtml"))
+        self.assertTrue(self.preview_url(last_text["id"]).endswith("/EPUB/text/section-0002.xhtml"))
+
+    def test_a_left_out_block_previews_where_it_would_be(self):
+        book = self.get_book()
+        second = [index for index, block in enumerate(book["blocks"]) if block["type"] == "heading"][1]
+        book["blocks"][second + 1]["include"] = False
+        self.put_book(book)
+
+        url = self.preview_url(book["blocks"][second + 1]["id"])
+
+        self.assertTrue(url.endswith("section-0002.xhtml"))
+
+    def test_the_preview_page_and_its_stylesheet_are_served(self):
+        url = self.preview_url(self.get_book()["blocks"][0]["id"])
+
+        page = self.client.get(url)
+        style = self.client.get(url.replace("text/section-0001.xhtml", "style.css"))
+
+        self.assertEqual(page.status_code, 200)
+        self.assertEqual(page["Content-Type"], "application/xhtml+xml")
+        self.assertIn(b"Chapter 1", page.content)
+        self.assertEqual(page["X-Frame-Options"], "SAMEORIGIN")
+        self.assertEqual(style["Content-Type"], "text/css")
+
+    def test_the_preview_follows_the_edits(self):
+        book = self.get_book()
+        heading = next(block for block in book["blocks"] if block["type"] == "heading")
+        url = self.preview_url(heading["id"])
+        self.client.get(url)
+        heading["label"] = "Renamed Chapter"
+        self.put_book(book)
+
+        self.assertIn("Renamed Chapter".encode(), self.client.get(url).content)
+
+    def test_only_files_inside_the_epub_are_served(self):
+        response = self.client.get(f"/api/convert/{self.id}/epub-files/../../settings.py")
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get(f"/api/convert/{self.id}/epub-files/EPUB/nothing.xhtml")
+        self.assertEqual(response.status_code, 404)
