@@ -101,8 +101,27 @@ export function suggestBook(fields, onProgress) {
     return upload('/api/library/suggestions', form, onProgress);
 }
 
+export function sendMessage(fields) {
+    const body = new FormData();
+    Object.entries(fields).forEach(([name, value]) => value && body.append(name, value));
+    return send('POST', '/api/contact/', { body });
+}
+
 export function getConversion(id) {
     return getJson(`/api/convert/${id}`);
+}
+
+// The conversion's page is still open.
+export function markSeen(id) {
+    return send('POST', `/api/convert/${id}/seen`);
+}
+
+// The conversion's page is closing. A beacon still gets through as the page goes;
+// it can't set headers, so the CSRF token goes in the form instead.
+export function markLeft(id) {
+    const form = new FormData();
+    form.append('csrfmiddlewaretoken', cookie('csrftoken'));
+    navigator.sendBeacon?.(`/api/convert/${id}/left`, form);
 }
 
 export function getBook(id) {

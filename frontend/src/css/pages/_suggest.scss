@@ -47,7 +47,7 @@
     color: var(--bf-cobalt);
     font-weight: 500;
     cursor: pointer;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    transition: border-color var(--bf-fast) var(--bf-ease), background-color var(--bf-fast) var(--bf-ease);
 
     &:hover {
         border-color: var(--bf-cobalt);
@@ -58,10 +58,4 @@
         outline: 3px solid rgba(59, 91, 255, 0.4);
         outline-offset: 2px;
     }
-}
-
-.bf-sent {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }

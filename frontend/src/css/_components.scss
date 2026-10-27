@@ -3,6 +3,14 @@
 .btn {
     --bs-btn-font-weight: 600;
     --bs-btn-border-radius: 999px;
+    transition: color var(--bf-fast) var(--bf-ease), background-color var(--bf-fast) var(--bf-ease),
+        border-color var(--bf-fast) var(--bf-ease), box-shadow var(--bf-fast) var(--bf-ease),
+        transform var(--bf-fast) var(--bf-ease);
+
+    // A little give when pressed
+    &:active {
+        transform: scale(0.97);
+    }
 }
 
 .btn-cobalt {
@@ -28,7 +36,7 @@
     --bs-btn-active-border-color: var(--bf-line-strong);
 }
 
-// On the blue support banner, in both themes
+// On the blue banner, in both themes
 .btn-white {
     --bs-btn-color: var(--bf-cobalt-active);
     --bs-btn-bg: #fff;
@@ -60,9 +68,14 @@
     border: 1px solid var(--bf-line-strong);
     background: transparent;
     color: var(--bf-text);
+    transition: background-color var(--bf-fast) var(--bf-ease), transform var(--bf-fast) var(--bf-ease);
 
     &:hover {
         background: var(--bf-pill);
+    }
+
+    &:active:not(:disabled) {
+        transform: scale(0.94);
     }
 }
 
@@ -82,6 +95,7 @@
         color: var(--bf-muted);
         font-size: 13px;
         font-weight: 600;
+        transition: background-color var(--bf-fast) var(--bf-ease), color var(--bf-fast) var(--bf-ease);
 
         &.on {
             background: var(--bf-seg-on-bg);
@@ -159,4 +173,11 @@
 .bf .form-check-input:checked {
     border-color: var(--bf-cobalt);
     background-color: var(--bf-cobalt);
+}
+
+// A form once it's sent (includes/forms.js)
+.bf-sent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
