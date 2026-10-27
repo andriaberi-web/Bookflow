@@ -59,16 +59,14 @@ export function getBooks() {
     return getJson('/api/library/');
 }
 
-// Uploads the PDF, telling onProgress the share sent so far (0 to 1). Uses XHR, as
-// fetch can't report upload progress.
-export async function uploadPdf(file, onProgress = () => {}) {
+// Posts the form, telling onProgress the share sent so far (0 to 1). Uses XHR, as fetch
+// can't report upload progress.
+async function upload(url, form, onProgress = () => {}) {
     const token = await csrfToken();
-    const form = new FormData();
-    form.append('pdf', file);
 
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/convert/');
+        xhr.open('POST', url);
         xhr.setRequestHeader('X-CSRFToken', token);
         xhr.upload.onprogress = (event) => {
             if (event.lengthComputable) onProgress(event.loaded / event.total);
@@ -88,6 +86,19 @@ export async function uploadPdf(file, onProgress = () => {}) {
 
 export function getLibraryBook(id) {
     return getJson(`/api/library/${id}`);
+}
+
+export function uploadPdf(file, onProgress) {
+    const form = new FormData();
+    form.append('pdf', file);
+    return upload('/api/convert/', form, onProgress);
+}
+
+// Sends a book suggestion: its fields, and the PDF if there is one.
+export function suggestBook(fields, onProgress) {
+    const form = new FormData();
+    Object.entries(fields).forEach(([name, value]) => value && form.append(name, value));
+    return upload('/api/library/suggestions', form, onProgress);
 }
 
 export function getConversion(id) {
