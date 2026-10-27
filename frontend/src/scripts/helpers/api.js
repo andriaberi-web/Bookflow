@@ -16,7 +16,7 @@ function cookie(name) {
 // Django wants its CSRF token back on every POST. In production the page comes from
 // Django and already has the cookie; the React dev server asks the API for it.
 async function csrfToken() {
-    if (!cookie('csrftoken')) await fetch('/api/convert/csrf', { credentials: 'same-origin' });
+    if (!cookie('csrftoken')) await fetch('/api/csrf', { credentials: 'same-origin' });
     return cookie('csrftoken');
 }
 
@@ -94,17 +94,20 @@ export function uploadPdf(file, onProgress) {
     return upload('/api/convert/', form, onProgress);
 }
 
-// Sends a book suggestion: its fields, and the PDF if there is one.
-export function suggestBook(fields, onProgress) {
+// A form's filled-in fields, ready to post.
+function formOf(fields) {
     const form = new FormData();
     Object.entries(fields).forEach(([name, value]) => value && form.append(name, value));
-    return upload('/api/library/suggestions', form, onProgress);
+    return form;
+}
+
+// Sends a book suggestion: its fields, and the PDF if there is one.
+export function suggestBook(fields, onProgress) {
+    return upload('/api/library/suggestions', formOf(fields), onProgress);
 }
 
 export function sendMessage(fields) {
-    const body = new FormData();
-    Object.entries(fields).forEach(([name, value]) => value && body.append(name, value));
-    return send('POST', '/api/contact/', { body });
+    return send('POST', '/api/contact/', { body: formOf(fields) });
 }
 
 export function getConversion(id) {

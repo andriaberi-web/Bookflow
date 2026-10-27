@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getConversion } from '../helpers/api';
-import { fill, megabytes } from '../helpers/format';
+import { fileSize, fill } from '../helpers/format';
 import { useConversionOpen } from '../helpers/presence';
 import { useSettings } from '../helpers/settings';
 import { Check, FileIcon } from '../includes/icons';
 import Message from '../includes/message';
+import { usePageTitle } from '../includes/page';
 
 // How often to ask the server how far the reading has got.
 const POLL_MS = 500;
@@ -16,6 +17,7 @@ function Reading() {
     const [conversion, setConversion] = useState(null);
     const [missing, setMissing] = useState(false);
     useConversionOpen(id);
+    usePageTitle(conversion?.name);
 
     // Ask again until the book is ready or reading has failed.
     useEffect(() => {
@@ -54,7 +56,7 @@ function Reading() {
     const status = conversion?.status || 'reading';
 
     return (
-        <section className="container bf-section bf-fill bf-reading">
+        <section className="container bf-section bf-fill">
             <div className="bf-reading-card">
                 <div className="bf-reading-cover">
                     { conversion?.cover_url ? (
@@ -71,7 +73,7 @@ function Reading() {
                     { conversion && (
                         <div className="bf-reading-file-line small bf-muted mb-3">
                             <span className="fw-medium bf-reading-name">{ conversion.name }.pdf</span>
-                            <span>{ megabytes(conversion.size) } { t.reading.mb }</span>
+                            <span>{ fileSize(conversion.size, t.units) }</span>
                             <span>{ fill(t.reading.pages, { n: conversion.pages }) }</span>
                         </div>
                     ) }

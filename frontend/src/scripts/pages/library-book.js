@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getBooks, getLibraryBook } from '../helpers/api';
-import { fill, megabytes } from '../helpers/format';
+import { fileSize } from '../helpers/format';
 import { useSettings } from '../helpers/settings';
 import { BookCover, BookGrid, DownloadButton } from '../includes/books';
 import { ChevronRight } from '../includes/icons';
 import Message from '../includes/message';
+import { usePageTitle } from '../includes/page';
 
 // How many other books to suggest under the book.
 const MORE = 4;
@@ -16,6 +17,7 @@ function LibraryBook() {
     const [book, setBook] = useState(null);
     const [missing, setMissing] = useState(false);
     const [more, setMore] = useState([]);
+    usePageTitle(book?.title);
 
     useEffect(() => {
         let stale = false;
@@ -45,7 +47,7 @@ function LibraryBook() {
     const facts = [
         book.language && [t.library.language, t.languages[book.language] || book.language],
         book.chapters && [t.library.chapters, book.chapters],
-        book.epub_size && [t.library.size, fill(t.library.mb, { mb: megabytes(book.epub_size) })],
+        book.epub_size && [t.library.size, fileSize(book.epub_size, t.units)],
     ].filter(Boolean);
 
     return (

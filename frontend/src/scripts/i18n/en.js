@@ -1,5 +1,6 @@
 const en = {
     languages: { ka: 'Georgian', en: 'English' },
+    units: { kb: 'KB', mb: 'MB' },
     nav: {
         converter: 'Converter',
         library: 'Library',
@@ -80,6 +81,7 @@ const en = {
             { mark: '▣', name: 'Cover', text: 'Taken from the first page when it’s a picture. You can replace it later.' },
         ],
         errors: {
+            too_many: 'You’ve sent a lot in the last hour. Please try again later.',
             no_file: 'Choose a PDF to upload.',
             not_pdf: 'That file isn’t a PDF.',
             too_big: 'That PDF is too big. Books up to {mb} MB can be converted.',
@@ -100,7 +102,6 @@ const en = {
         steps: ['Reading the PDF', 'Finding paragraphs', 'Finding chapters'],
         progress: 'Reading progress',
         pages: '{n} pages',
-        mb: 'MB',
         coverFound: 'Cover found',
         noCover: 'No cover in the PDF',
         untitled: 'Untitled',
@@ -226,7 +227,6 @@ const en = {
         language: 'Language',
         chapters: 'Chapters',
         size: 'EPUB size',
-        mb: '{mb} MB',
         readers: 'Opens in Apple Books, Google Play Books, Kobo and most e-readers.',
         more: 'More from the library',
         notFound: 'This book isn’t in the library.',
@@ -265,6 +265,7 @@ const en = {
             { name: 'It joins the library', text: 'Free to download as EPUB. Leave your email and we’ll tell you.' },
         ],
         errors: {
+            too_many: 'You’ve sent a lot in the last hour. Please try again later.',
             no_title: 'Give the book’s title.',
             too_long: 'That’s too long. Notes can be up to {n} characters.',
             bad_email: 'That email address doesn’t look right.',
@@ -289,6 +290,7 @@ const en = {
         sentText: 'Every message is read by a person. If you left your email, we’ll answer there.',
         another: 'Write another',
         elsewhere: 'Other places to go',
+        orWrite: 'or write to',
         report: 'Report a problem',
         reportText: 'A chapter not found, a paragraph split wrong?',
         reportLink: 'Open an issue on GitHub',
@@ -299,6 +301,7 @@ const en = {
         code: 'Read the code',
         codeText: 'Bookflow and its engine are open source on GitHub:',
         errors: {
+            too_many: 'You’ve sent a lot in the last hour. Please try again later.',
             no_text: 'Write a message first.',
             too_long: 'That’s too long. Messages can be up to 5000 characters.',
             bad_email: 'That email address doesn’t look right.',
