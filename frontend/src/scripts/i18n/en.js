@@ -12,9 +12,15 @@ const en = {
         close: 'Close menu',
     },
     footer: {
-        poweredBy: 'Powered by',
-        copyright: '© {year} Andria Beridze',
+        about: 'Bookflow turns PDF books into EPUBs that read like real books, and keeps a library of books checked by hand.',
+        site: 'Site',
+        legal: 'Legal',
+        openSource: 'Open source',
         source: 'Source code',
+        license: 'License',
+        copyright: '© {year} Andria Beridze',
+        usesBefore: 'Uses ',
+        usesAfter: ' by Andria Beridze',
     },
     home: {
         badge: 'Georgian and English books',
@@ -23,6 +29,9 @@ const en = {
         heroText: 'Bookflow turns a PDF into a reflowable EPUB, with real chapters, clean paragraphs and linked notes. If it misreads something, you fix it before you download.',
         convert: 'Convert a PDF',
         browse: 'Browse the library',
+        // After the number, in bold
+        converted: ' books converted so far',
+        convertedOne: ' book converted so far',
         fixedLayout: 'fixed layout',
         howEyebrow: 'How it works',
         howTitle: 'Three steps, and nothing to install.',
