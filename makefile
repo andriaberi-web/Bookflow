@@ -15,7 +15,7 @@ NPX_BIN := $(FRONTEND_DIR)/node_modules/.bin
 # editable, so changes there show up right away) or anything pip installs, such as a
 # git tag. Without it, the pinned release is used.
 -include $(BACKEND_DIR)/.env
-PDF2EPUB_SOURCE ?= git+https://github.com/andriaberi/PDF2EPUB.git@v2026.1027.3
+PDF2EPUB_SOURCE ?= git+https://github.com/andriaberi/PDF2EPUB.git@v1.2026.1028.3
 
 # PHONY targets
 .PHONY: help install install-backend install-engine install-frontend \
@@ -68,7 +68,9 @@ install-backend:
 	$(MAKE) install-engine
 
 install-engine:
+	@# A folder's version comes from its git tags, which CI makes on GitHub, so fetch them first.
 	@if [ -d "$(PDF2EPUB_SOURCE)" ]; then \
+		git -C "$(PDF2EPUB_SOURCE)" fetch -q --tags || echo "Couldn't fetch PDF2EPUB's tags; its version may be out of date"; \
 		$(PYTHON) -m pip install -q -e "$(PDF2EPUB_SOURCE)"; \
 	else \
 		$(PYTHON) -m pip install -q "$(PDF2EPUB_SOURCE)"; \
