@@ -64,8 +64,8 @@ function LibraryBook() {
                     { book.author && <div className="fs-4 bf-muted mb-4">{ book.author }</div> }
                     { book.epub_url && (
                         <div className="mb-4">
-                            <DownloadButton t={ t } book={ book } className="btn-lg" />
-                            <p className="small bf-muted mt-2 mb-0">{ t.library.readers }</p>
+                            <DownloadButton t={ t } book={ book } />
+                            <p className="small bf-muted mt-3 mb-0">{ t.library.readers }</p>
                         </div>
                     ) }
                     { facts.length > 0 && (
