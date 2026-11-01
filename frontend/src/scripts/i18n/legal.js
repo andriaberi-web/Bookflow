@@ -121,7 +121,7 @@ const legal = {
                 heading: 'The site',
                 text: [
                     '© 2026 Andria Beridze. Bookflow is free software under the GNU AGPL, version 3 or later. Its source, at the exact version running here, is linked in the footer as “Source code”.',
-                    'Anything built on Bookflow must show its users this credit: Based on Bookflow by Andria Beridze (https://github.com/andriaberi/Bookflow). See the [NOTICE](https://github.com/andriaberi/Bookflow/blob/main/NOTICE).',
+                    'Anything built on Bookflow must show its users this credit: Based on Bookflow by Andria Beridze (https://github.com/andriaberi-web/Bookflow). See the [NOTICE](https://github.com/andriaberi-web/Bookflow/blob/main/NOTICE).',
                 ],
             },
             {

@@ -30,7 +30,7 @@ test('the footer links to the legal pages and to the code as it runs', async () 
     expect(footer.getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
     expect(footer.getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy');
     expect(footer.getByRole('link', { name: 'Copyright' })).toHaveAttribute('href', '/copyright');
-    expect(footer.getByRole('link', { name: 'Source code' })).toHaveAttribute('href', 'https://github.com/andriaberi/Bookflow/tree/00d1f87abcdef');
+    expect(footer.getByRole('link', { name: 'Source code' })).toHaveAttribute('href', 'https://github.com/andriaberi-web/Bookflow/tree/00d1f87abcdef');
     expect(footer.getByText('00d1f87')).toBeInTheDocument();
     expect(footer.getByText('1.2026.1028.5')).toBeInTheDocument();
     expect(footer.getByText(/Uses/)).toHaveTextContent('Uses PDF2EPUB by Andria Beridze');

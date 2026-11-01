@@ -123,7 +123,7 @@ and the [code of conduct](docs/CODE_OF_CONDUCT.md). Security problems go private
 [NOTICE](NOTICE)): anything built on Bookflow, including a website, must show its users
 this credit:
 
-> Based on Bookflow by Andria Beridze (https://github.com/andriaberi/Bookflow)
+> Based on Bookflow by Andria Beridze (https://github.com/andriaberi-web/Bookflow)
 
 Under the AGPL, anyone who runs Bookflow, or a changed copy of it, as a site for others
 must offer those visitors its source under the same license. The footer does this here:

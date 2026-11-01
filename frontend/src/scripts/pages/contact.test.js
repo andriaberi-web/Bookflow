@@ -211,9 +211,9 @@ test('beside the form are the other places to go', async () => {
     await renderAt('/contact');
     const main = within(screen.getByRole('main'));
 
-    expect(main.getByRole('link', { name: 'Open an issue on GitHub' })).toHaveAttribute('href', 'https://github.com/andriaberi/Bookflow/issues/new');
+    expect(main.getByRole('link', { name: 'Open an issue on GitHub' })).toHaveAttribute('href', 'https://github.com/andriaberi-web/Bookflow/issues/new');
     expect(main.getByRole('link', { name: 'Browse the library' })).toHaveAttribute('href', '/library');
-    expect(main.getByRole('link', { name: 'Bookflow' })).toHaveAttribute('href', 'https://github.com/andriaberi/Bookflow');
+    expect(main.getByRole('link', { name: 'Bookflow' })).toHaveAttribute('href', 'https://github.com/andriaberi-web/Bookflow');
     expect(main.getByRole('link', { name: 'PDF2EPUB' })).toHaveAttribute('href', 'https://github.com/andriaberi/PDF2EPUB');
 });
 

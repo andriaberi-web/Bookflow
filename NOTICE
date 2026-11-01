@@ -18,7 +18,7 @@ service that lets users interact with such a work over a network, must preserve
 this attribution and display it where the work's users can see it, such as in its
 Appropriate Legal Notices, an "About" page or a footer:
 
-    Based on Bookflow by Andria Beridze (https://github.com/andriaberi/Bookflow)
+    Based on Bookflow by Andria Beridze (https://github.com/andriaberi-web/Bookflow)
 
 PDF2EPUB
 --------
