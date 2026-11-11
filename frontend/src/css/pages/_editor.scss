@@ -128,16 +128,22 @@
         top: calc(var(--bf-nav-height) + 16px);
         display: flex;
         flex-direction: column;
+        // 16px clear of the window's bottom edge, as it is of the navbar.
         max-height: calc(100dvh - var(--bf-nav-height) - 32px);
+        // On a short window the side scrolls, rather than the contents spilling out,
+        // with room after the last card so its bottom edge scrolls fully into view.
+        overflow-y: auto;
+        padding-bottom: 16px;
     }
 
     .bf-editor-contents {
         flex-direction: column;
-        min-height: 0;
+        // Room for the title and a few chapters; the list scrolls within it.
+        min-height: 12rem;
         margin-bottom: 0;
 
         .bf-toc {
-            min-height: 120px;
+            min-height: 0;
             overflow-y: auto;
         }
     }
