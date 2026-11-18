@@ -12,7 +12,7 @@ const PAGES = [
 const DESKTOP = '(min-width: 992px)';
 
 function Navbar() {
-    const { t, lang, setLang, theme, toggleTheme } = useSettings();
+    const { t, theme, toggleTheme } = useSettings();
     const [open, setOpen] = useState(false);
     const location = useLocation();
     const toggleRef = useRef(null);
@@ -55,13 +55,6 @@ function Navbar() {
 
     const dark = theme === 'dark';
 
-    const languageSwitch = (
-        <div className="bf-seg" role="group" aria-label={ t.nav.language }>
-            <button type="button" className={ lang === 'en' ? 'on' : '' } aria-pressed={ lang === 'en' } onClick={ () => setLang('en') }>EN</button>
-            <button type="button" className={ lang === 'ka' ? 'on' : '' } aria-pressed={ lang === 'ka' } onClick={ () => setLang('ka') } lang="ka">ქა</button>
-        </div>
-    );
-
     const themeToggle = (
         <button type="button" className="bf-icon-btn" aria-label={ dark ? t.nav.toLight : t.nav.toDark } onClick={ toggleTheme }>
             { dark ? <Sun size={ 18 } /> : <Moon size={ 18 } /> }
@@ -81,7 +74,6 @@ function Navbar() {
                     { PAGES.map((page) => (
                         <NavLink key={ page.to } to={ page.to } className="bf-nav-link">{ t.nav[page.key] }</NavLink>
                     )) }
-                    { languageSwitch }
                     { themeToggle }
                 </div>
 
@@ -116,8 +108,7 @@ function Navbar() {
                             </ul>
 
                             <div className="bf-menu-settings">
-                                { languageSwitch }
-                                { themeToggle }
+                                            { themeToggle }
                             </div>
                         </div>
                     </div>

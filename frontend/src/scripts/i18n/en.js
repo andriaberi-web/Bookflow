@@ -4,7 +4,6 @@ const en = {
     nav: {
         converter: 'Converter',
         contact: 'Contact',
-        language: 'Language',
         toDark: 'Switch to dark mode',
         toLight: 'Switch to light mode',
         menu: 'Menu',

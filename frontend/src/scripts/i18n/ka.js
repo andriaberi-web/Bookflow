@@ -4,7 +4,6 @@ const ka = {
     nav: {
         converter: 'გადამყვანი',
         contact: 'კავშირი',
-        language: 'ენა',
         toDark: 'მუქ რეჟიმზე გადართვა',
         toLight: 'ღია რეჟიმზე გადართვა',
         menu: 'მენიუ',
