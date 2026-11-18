@@ -4,7 +4,6 @@
 # Paths (relative)
 BACKEND_DIR   := ./backend
 FRONTEND_DIR  := ./frontend
-TEMPLATES_DIR := $(BACKEND_DIR)/bookflow/templates
 
 PYTHON ?= .venv/bin/python
 MANAGE := $(PYTHON) $(BACKEND_DIR)/manage.py
@@ -15,13 +14,12 @@ NPX_BIN := $(FRONTEND_DIR)/node_modules/.bin
 # editable, so changes there show up right away) or anything pip installs, such as a
 # git tag. Without it, the pinned release is used.
 -include $(BACKEND_DIR)/.env
-PDF2EPUB_SOURCE ?= git+https://github.com/andriaberi/PDF2EPUB.git@v1.0.2
+PDF2EPUB_SOURCE ?= git+https://github.com/andriaberi/PDF2EPUB.git@v1.1.0
 
 # PHONY targets
 .PHONY: help install install-backend install-engine install-frontend \
         dev run-backend run-frontend \
-        migrations migrate superuser shell cleanup review check test \
-        frontend copy collect deploy restart clean
+        migrations migrate shell cleanup check test clean
 
 # Help (default)
 help:
@@ -38,21 +36,12 @@ help:
 	@echo "Database:"
 	@echo "  make migrations ----> Make migrations for the apps"
 	@echo "  make migrate -------> Apply migrations"
-	@echo "  make superuser -----> Create an admin user"
 	@echo "  make shell ---------> Django shell"
 	@echo "  make cleanup -------> Delete conversions whose page was closed"
-	@echo "  make review --------> Email what is waiting for review in the admin"
 	@echo ""
 	@echo "Checks:"
 	@echo "  make check ---------> Django system check + tests"
 	@echo "  make test ----------> Run Django tests"
-	@echo ""
-	@echo "Production:"
-	@echo "  make deploy --------> Install, build frontend, copy files, collect static, restart services"
-	@echo "  make frontend ------> Install & build frontend (React)"
-	@echo "  make copy ----------> Copy frontend build into Django templates"
-	@echo "  make collect -------> Django collectstatic"
-	@echo "  make restart -------> Restart gunicorn + nginx"
 	@echo ""
 	@echo "  make clean ---------> Remove caches and build output"
 	@echo ""
@@ -95,22 +84,16 @@ run-frontend:
 
 # Database
 migrations:
-	$(MANAGE) makemigrations converter contact
+	$(MANAGE) makemigrations converter
 
 migrate:
 	$(MANAGE) migrate
-
-superuser:
-	$(MANAGE) createsuperuser
 
 shell:
 	$(MANAGE) shell
 
 cleanup:
 	$(MANAGE) cleanup_conversions
-
-review:
-	$(MANAGE) remind_review
 
 # Checks
 check:
@@ -121,24 +104,6 @@ check:
 test:
 	$(MANAGE) test $(BACKEND_DIR)
 
-# Production Deployment
-deploy: install-backend frontend copy collect migrate restart
-	@echo "Production deployment completed"
-
-frontend:
-	cd $(FRONTEND_DIR) && npm install
-	cd $(FRONTEND_DIR) && npm run build
-
-copy:
-	cp $(FRONTEND_DIR)/build/index.html $(TEMPLATES_DIR)/index.html
-
-collect:
-	$(MANAGE) collectstatic --noinput
-
-restart:
-	sudo systemctl restart gunicorn
-	sudo systemctl restart nginx
-
 clean:
-	rm -rf $(FRONTEND_DIR)/build $(BACKEND_DIR)/staticfiles
+	rm -rf $(FRONTEND_DIR)/build
 	find . -name __pycache__ -not -path "./.venv/*" -not -path "*/node_modules/*" -exec rm -rf {} +

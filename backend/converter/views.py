@@ -3,7 +3,6 @@ from functools import wraps
 from pathlib import Path
 from urllib.parse import quote
 
-from bookflow import public
 from bookflow.responses import error
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -48,7 +47,6 @@ def _serialize(c: Conversion) -> dict:
 
 
 @require_POST
-@public.limited("upload", trap=False)
 def conversion_create(request):
     pdf = request.FILES.get("pdf")
     if not pdf:
@@ -64,7 +62,6 @@ def conversion_create(request):
         name=Path(pdf.name).stem,
         size=pdf.size,
         pages=pages,
-        keep=request.user.is_staff,
     )
     engine.start(conversion)
     conversion.refresh_from_db()

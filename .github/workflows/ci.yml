@@ -12,10 +12,6 @@ jobs:
             fail-fast: false
             matrix:
                 python-version: ["3.12", "3.13", "3.14"]
-        env:
-            DEBUG: "True"
-            SECRET_KEY: ci-only-not-secret
-            ALLOWED_HOSTS: "127.0.0.1,localhost"
         steps:
             - uses: actions/checkout@v5
             - uses: actions/setup-python@v6
