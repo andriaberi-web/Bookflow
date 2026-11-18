@@ -39,7 +39,7 @@ def left(conversion: Conversion) -> None:
 def remove_left() -> int:
     """Delete the conversions nobody has open; how many."""
     now = timezone.now()
-    gone = Conversion.objects.filter(keep=False, last_seen__lt=now - EXPIRY).filter(
+    gone = Conversion.objects.filter(last_seen__lt=now - EXPIRY).filter(
         ~Q(status="reading") | Q(created_at__lt=now - STUCK)
     )
     count = 0

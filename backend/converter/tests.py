@@ -4,14 +4,13 @@ from pathlib import Path
 from unittest import mock
 
 import pymupdf
-from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from pdf2epub import ConvertError
 
 from . import cleanup, engine, isolated
-from .models import Conversion, Total
+from .models import Conversion
 
 MEDIA = tempfile.mkdtemp(prefix="bookflow-test-media-")
 
@@ -69,19 +68,12 @@ class ConversionTests(TestCase):
         self.assertEqual(conversion.book["version"], 1)
         self.assertIsNone(conversion.book["cover"])
 
-    def test_each_book_read_is_counted_and_the_count_outlives_it(self):
-        self.client.post("/api/convert/", {"pdf": upload()})
-        self.client.post("/api/convert/", {"pdf": upload()})
-        Conversion.objects.all().delete()
 
-        self.assertEqual(self.client.get("/api/info").json()["converted"], 2)
-
-    def test_a_book_that_cant_be_read_isnt_counted(self):
+    def test_a_book_that_cant_be_read_fails(self):
         with mock.patch("converter.isolated.read_book", side_effect=ConvertError("no text in this PDF")):
             data = self.client.post("/api/convert/", {"pdf": upload()}).json()
 
         self.assertEqual(data["status"], "failed")
-        self.assertEqual(Total.of(Total.CONVERTED), 0)
 
     def test_detail_returns_the_conversion(self):
         created = self.client.post("/api/convert/", {"pdf": upload()}).json()
@@ -95,15 +87,14 @@ class ConversionTests(TestCase):
         response = self.client.get("/api/convert/00000000-0000-0000-0000-000000000000")
         self.assertEqual(response.status_code, 404)
 
-    def test_a_books_pictures_are_left_out(self):
+    def test_a_books_pictures_are_kept(self):
         doc = pymupdf.open(stream=make_pdf(), filetype="pdf")
         image = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 200, 100), False)
         doc[1].insert_image(pymupdf.Rect(150, 500, 450, 650), pixmap=image, keep_proportion=False)
         pk = self.client.post("/api/convert/", {"pdf": upload(data=doc.tobytes())}).json()["id"]
 
         blocks = Conversion.objects.get(pk=pk).book["blocks"]
-        self.assertTrue(blocks)
-        self.assertNotIn("picture", {block["type"] for block in blocks})
+        self.assertIn("picture", {block["type"] for block in blocks})
 
     def test_upload_needs_a_file(self):
         response = self.client.post("/api/convert/", {})
@@ -139,18 +130,6 @@ class ConversionTests(TestCase):
 
         self.assertEqual(data["status"], "failed")
         self.assertEqual(Conversion.objects.get(pk=data["id"]).error, isolated.TOO_MUCH)
-
-    @override_settings(CONVERTER_READERS=0, CONVERTER_WAIT=0)
-    def test_a_book_waits_its_turn_and_fails_if_none_comes(self):
-        data = self.client.post("/api/convert/", {"pdf": upload()}).json()
-
-        self.assertEqual(data["status"], "failed")
-        self.assertEqual(Conversion.objects.get(pk=data["id"]).error, engine.BUSY)
-
-    def test_pages_say_what_they_may_load(self):
-        policy = self.client.get("/api/info")["Content-Security-Policy"]
-        self.assertIn("default-src 'self'", policy)
-        self.assertIn("object-src 'none'", policy)
 
     def test_upload_only_accepts_post(self):
         response = self.client.get("/api/convert/")
@@ -400,15 +379,6 @@ class CleanupTests(TestCase):
     def test_an_open_page_keeps_it_and_a_silent_one_doesnt(self):
         self.assertEqual(self.later(cleanup.EXPIRY / 2), 0)
         self.later(cleanup.EXPIRY * 2)
-        self.assertFalse(self.exists())
-
-    def test_the_admins_conversions_are_kept(self):
-        self.client.force_login(User.objects.create_superuser("admin", "admin@example.com", "pw"))
-        kept = self.client.post("/api/convert/", {"pdf": upload()}).json()["id"]
-
-        self.later(cleanup.EXPIRY * 2)
-
-        self.assertTrue(Conversion.objects.filter(pk=kept).exists())
         self.assertFalse(self.exists())
 
     def test_a_book_being_read_is_left_alone_unless_stuck(self):

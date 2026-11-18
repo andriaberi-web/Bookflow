@@ -1,13 +1,10 @@
 """The one place Bookflow talks to PDF2EPUB."""
 
-import fcntl
 import io
 import logging
 import os
 import threading
-import time
 import zipfile
-from contextlib import contextmanager
 from pathlib import Path
 
 from django.conf import settings
@@ -19,15 +16,13 @@ from pdf2epub.cover import load_cover
 from pdf2epub.epub.writer import split_long
 
 from . import isolated
-from .models import Conversion, Total
+from .models import Conversion
 
 log = logging.getLogger(__name__)
 
 # The steps read_book() reports; writing the EPUB comes later, on download.
 READING_STEPS = STEPS[:3]
 
-
-BUSY = "The converter is busy; try again in a few minutes"
 
 
 def limits(task: str) -> isolated.Limits:
@@ -41,28 +36,6 @@ def count_pages(data: bytes) -> int:
         return isolated.count_pages(data, limits("check"))
     except ConvertError as e:
         raise ValueError(str(e)) from None
-
-
-@contextmanager
-def reading_turn():
-    """Wait for one of settings.CONVERTER_READERS turns to read a book, shared by every
-    worker through lock files, so a crowd of uploads can't take all the server's memory
-    at once; ConvertError if none comes free within CONVERTER_WAIT seconds."""
-    folder = Path(settings.CONVERTER_LOCKS)
-    folder.mkdir(parents=True, exist_ok=True)
-    deadline = time.monotonic() + settings.CONVERTER_WAIT
-    while True:
-        for turn in range(settings.CONVERTER_READERS):
-            with open(folder / f"reader-{turn}.lock", "w") as lock:
-                try:
-                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except BlockingIOError:
-                    continue
-                yield  # the lock goes with the file when it closes
-                return
-        if time.monotonic() > deadline:
-            raise ConvertError(BUSY)
-        time.sleep(1)
 
 
 def start(conversion: Conversion) -> None:
@@ -83,9 +56,8 @@ def read(pk) -> None:
                 Conversion.objects.filter(pk=pk).update(step=READING_STEPS.index(step))
 
         try:
-            with reading_turn():
-                # The cover is kept as an image file, not as base64 in the JSON.
-                data, cover = isolated.read_book(conversion.pdf.path, limits("read"), progress)
+            # The cover is kept as an image file, not as base64 in the JSON.
+            data, cover = isolated.read_book(conversion.pdf.path, limits("read"), progress)
         except ConvertError as e:
             conversion.status = "failed"
             conversion.error = str(e)
@@ -96,8 +68,6 @@ def read(pk) -> None:
             conversion.status = "ready"
             conversion.step = len(READING_STEPS) - 1
         conversion.save()
-        if conversion.status == "ready":
-            Total.add(Total.CONVERTED)
     except Exception:
         log.exception("reading conversion %s failed", pk)
         Conversion.objects.filter(pk=pk).update(status="failed", error="Something went wrong while reading the book.")

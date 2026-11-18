@@ -109,8 +109,7 @@ def _run(task, args, limits: Limits, on_step=None):
 # The tasks, run in the new process; each is passed the pipe to report steps on.
 
 def _read_book(conn, path: str) -> tuple[dict, bytes | None]:
-    # Pictures are left out for now: the editor would load every one with the book.
-    book = pdf2epub.read_book(Options(pdf=path, pictures=False), lambda step: conn.send(("step", step)))
+    book = pdf2epub.read_book(Options(pdf=path), lambda step: conn.send(("step", step)))
     data = book.to_dict()
     data["cover"] = None  # sent apart, as the image itself
     return data, book.cover.data if book.cover else None
