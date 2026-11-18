@@ -1,4 +1,4 @@
-"""Checks on an uploaded PDF, shared by the converter and book suggestions."""
+"""Checks on an uploaded PDF."""
 
 from django.conf import settings
 

@@ -7,13 +7,8 @@
 
 // Includes
 @use 'includes/navbar';
-@use 'includes/footer';
 @use 'includes/message';
 
 // Pages
-@use 'pages/home';
 @use 'pages/convert';
 @use 'pages/editor';
-@use 'pages/library';
-@use 'pages/contact';
-@use 'pages/legal';

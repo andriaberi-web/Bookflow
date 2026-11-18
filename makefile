@@ -95,7 +95,7 @@ run-frontend:
 
 # Database
 migrations:
-	$(MANAGE) makemigrations converter library contact
+	$(MANAGE) makemigrations converter contact
 
 migrate:
 	$(MANAGE) migrate

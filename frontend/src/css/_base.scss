@@ -54,7 +54,7 @@ a {
 }
 
 // A one-screen page (converter, placeholders): its content is centered between the
-// navbar and the bottom of the screen, and the footer starts below the fold.
+// navbar and the bottom of the screen.
 .bf-fill {
     --bf-fill-pad: clamp(20px, 4.5vh, 44px);
     display: flex;

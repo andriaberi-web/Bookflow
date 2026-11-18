@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "converter",
-    "library",
     "contact",
 ]
 
@@ -135,7 +134,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # The files the build puts at the site's root: the tab icons and the app manifest
 WHITENOISE_ROOT = BUILD_DIR if BUILD_DIR.exists() else None
 
-# Uploaded PDFs, converted EPUBs and library covers
+# Uploaded PDFs and converted EPUBs
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -193,7 +192,7 @@ EMAIL_TIMEOUT = 15
 if not EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = f"Bookflow <{EMAIL_HOST_USER}>" if EMAIL_HOST_USER else "Bookflow <bookflow@localhost>"
-# Who hears about new suggestions and messages
+# Who hears about new messages
 NOTIFY_EMAIL = os.getenv("NOTIFY_EMAIL", EMAIL_HOST_USER)
 # Send emails in a background thread, so a form never waits on the mail server; tests
 # turn this off.
@@ -201,7 +200,7 @@ MAIL_BACKGROUND = True
 
 # How often one visitor may post each form, per hour (bookflow/public.py); tests
 # post freely.
-POSTS_PER_HOUR = {} if TESTING else {"upload": 30, "suggestion": 10, "message": 10}
+POSTS_PER_HOUR = {} if TESTING else {"upload": 30, "message": 10}
 
 LOGGING = {
     "version": 1,
