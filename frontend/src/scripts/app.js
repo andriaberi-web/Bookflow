@@ -1,13 +1,9 @@
 import { useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './includes/navbar';
-import Footer from './includes/footer';
-import Home from './pages/home';
 import Convert from './pages/convert';
 import Reading from './pages/reading';
-import Contact from './pages/contact';
 import Editor from './pages/editor';
-import Legal from './pages/legal';
 import NotFound from './pages/not-found';
 
 function App() {
@@ -24,19 +20,14 @@ function App() {
             <main className="bf-main">
                 <div className="bf-page" key={ pathname }>
                     <Routes>
-                        <Route path="/" element={ <Home /> } />
+                        <Route path="/" element={ <Navigate to="/convert" replace /> } />
                         <Route path="/convert" element={ <Convert /> } />
                         <Route path="/convert/:id" element={ <Reading /> } />
                         <Route path="/convert/:id/edit" element={ <Editor /> } />
-                        <Route path="/contact" element={ <Contact /> } />
-                        <Route path="/terms" element={ <Legal page="terms" /> } />
-                        <Route path="/privacy" element={ <Legal page="privacy" /> } />
-                        <Route path="/copyright" element={ <Legal page="copyright" /> } />
                         <Route path="*" element={ <NotFound /> } />
                     </Routes>
                 </div>
             </main>
-            <Footer />
         </div>
     );
 }

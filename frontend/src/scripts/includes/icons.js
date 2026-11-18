@@ -23,10 +23,6 @@ export const LogoMark = (props) => (
     <Icon strokeWidth={ 2.2 } { ...props }><path d="M4 6h10" /><path d="M4 12h16" /><path d="M4 18h7" /></Icon>
 );
 
-export const ArrowRight = (props) => (
-    <Icon strokeWidth={ 2.2 } { ...props }><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></Icon>
-);
-
 export const Sun = (props) => (
     <Icon { ...props }>
         <circle cx="12" cy="12" r="4" />
@@ -37,10 +33,6 @@ export const Sun = (props) => (
 
 export const Moon = (props) => (
     <Icon { ...props }><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></Icon>
-);
-
-export const Menu = (props) => (
-    <Icon { ...props }><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></Icon>
 );
 
 export const FileUp = (props) => (
