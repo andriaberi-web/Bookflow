@@ -52,7 +52,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 200 * 1024 * 1024
 # PDFs and images are opened in a process of their own (converter/isolated.py), which
 # may take this much memory, in megabytes, and this many seconds.
 CONVERTER_LIMITS = {
-    "read":  {"memory_mb": 1536, "seconds": 300},   # reading a book
+    "read":  {"memory_mb": 8192, "seconds": 1800},  # reading a book, pictures and all
     "check": {"memory_mb": 512, "seconds": 30},     # counting an upload's pages
     "page":  {"memory_mb": 512, "seconds": 30},     # a page for the editor's preview
     "cover": {"memory_mb": 512, "seconds": 15},     # an uploaded cover image

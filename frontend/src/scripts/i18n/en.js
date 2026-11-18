@@ -9,7 +9,7 @@ const en = {
         title: 'Drop in a book.',
         lead: 'Bookflow reads it, then you check every chapter before you download.',
         privacy: 'Your PDF and your edits are deleted as soon as you leave the page.',
-        notice: 'Bookflow is made for regular books, like novels and nonfiction. Research papers, textbooks, magazines and other complex layouts may not convert well. Pictures inside the book are left out for now, for memory and security reasons.',
+        notice: 'Bookflow is made for regular books, like novels and nonfiction. Research papers, textbooks, magazines and other complex layouts may not convert well.',
         drop: 'Drop your PDF here',
         or: 'or',
         browse: 'browse your files',

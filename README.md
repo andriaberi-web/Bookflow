@@ -2,7 +2,7 @@
 
 Bookflow turns PDF books into EPUBs that read like real books. It's a Django + React app,
 run on your own computer, on [PDF2EPUB](https://github.com/andriaberi/PDF2EPUB), the
-engine that finds a book's chapters, paragraphs, notes and cover. It's in
+engine that finds a book's chapters, paragraphs, notes, pictures and cover. It's in
 English and Georgian, in light and dark.
 
 Upload a PDF, watch it being read, then fix the book in the editor, side by side with the
