@@ -27,12 +27,12 @@ test('the site opens straight on the converter', async () => {
     expect(screen.queryByRole('contentinfo')).toBeNull();
 });
 
-test('there is no language switch, but a remembered language still translates the page', async () => {
+test('the page is in English, even where Georgian was picked before', async () => {
     localStorage.setItem('lang', 'ka');
     await renderAt('/');
     expect(screen.queryByRole('button', { name: 'ქა' })).toBeNull();
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('ატვირთე წიგნი.');
-    expect(document.documentElement.lang).toBe('ka');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Drop in a book.');
+    expect(document.documentElement.lang).toBe('en');
 });
 
 test('the theme button switches between light and dark', async () => {
