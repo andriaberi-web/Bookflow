@@ -5,6 +5,9 @@ const en = {
         toDark: 'Switch to dark mode',
         toLight: 'Switch to light mode',
     },
+    footer: {
+        uses: 'Uses',
+    },
     convert: {
         title: 'Drop in a book.',
         lead: 'Bookflow reads it, then you check every chapter before you download.',

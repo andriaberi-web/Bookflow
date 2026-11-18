@@ -24,7 +24,12 @@ beforeEach(() => {
 test('the site opens straight on the converter', async () => {
     await renderAt('/');
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Drop in a book.');
-    expect(screen.queryByRole('contentinfo')).toBeNull();
+});
+
+test('the footer shows the installed PDF2EPUB version', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ engine: '1.1.0+g1a2b3c4' }) }));
+    await renderAt('/');
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('Uses PDF2EPUB 1.1.0');
 });
 
 test('the page is in English, even where Georgian was picked before', async () => {

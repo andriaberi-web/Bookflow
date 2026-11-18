@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 from unittest import mock
 
+import pdf2epub
 import pymupdf
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
@@ -134,6 +135,9 @@ class ConversionTests(TestCase):
     def test_upload_only_accepts_post(self):
         response = self.client.get("/api/convert/")
         self.assertEqual(response.status_code, 405)
+
+    def test_info_gives_the_installed_engine_version(self):
+        self.assertEqual(self.client.get("/api/info").json(), {"engine": pdf2epub.__version__})
 
     def test_csrf_endpoint_sets_the_cookie(self):
         response = self.client.get("/api/csrf")
