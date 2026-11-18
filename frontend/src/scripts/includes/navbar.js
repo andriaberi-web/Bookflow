@@ -5,7 +5,6 @@ import { ChevronRight, Close, LogoMark, Menu, Moon, Sun } from './icons';
 
 const PAGES = [
     { to: '/convert', key: 'converter' },
-    { to: '/library', key: 'library' },
     { to: '/contact', key: 'contact' },
 ];
 

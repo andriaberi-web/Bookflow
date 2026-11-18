@@ -5,7 +5,6 @@ from django.core import mail
 from django.core.cache import cache
 from django.core.management import call_command
 from django.test import TestCase, override_settings
-from library.models import Suggestion
 
 from . import review
 from .models import Message
@@ -17,11 +16,11 @@ class ContactTests(TestCase):
         return self.client.post("/api/contact/", fields)
 
     def test_a_message_is_kept_for_the_admin(self):
-        response = self.send(name=" Nino ", email="nino@example.com", text="Love the library.")
+        response = self.send(name=" Nino ", email="nino@example.com", text="Love the converter.")
 
         self.assertEqual(response.status_code, 201)
         message = Message.objects.get()
-        self.assertEqual((message.name, message.email, message.text, message.is_read), ("Nino", "nino@example.com", "Love the library.", False))
+        self.assertEqual((message.name, message.email, message.text, message.is_read), ("Nino", "nino@example.com", "Love the converter.", False))
 
     def test_name_and_email_are_optional(self):
         self.assertEqual(self.send(text="Hello").status_code, 201)
@@ -37,13 +36,13 @@ class ContactTests(TestCase):
         self.assertFalse(Message.objects.exists())
 
     def test_the_owner_is_emailed_and_can_reply(self):
-        self.send(name="Nino", email="nino@example.com", text="Love the library.")
+        self.send(name="Nino", email="nino@example.com", text="Love the converter.")
 
         [email] = mail.outbox
         self.assertEqual(email.to, ["owner@example.com"])
         self.assertEqual(email.reply_to, ["nino@example.com"])
         self.assertIn("Nino", email.subject)
-        self.assertIn("Love the library.", email.body)
+        self.assertIn("Love the converter.", email.body)
         self.assertIn(f"https://bookflow.test/admin/contact/message/{Message.objects.get().pk}/change/", email.body)
 
     def test_a_mail_server_that_fails_doesnt_lose_the_message(self):
@@ -68,21 +67,13 @@ class ContactTests(TestCase):
         self.assertEqual(self.client.get("/api/contact/").status_code, 405)
 
     def test_a_problem_is_kept_with_the_page_it_is_about(self):
-        self.send(kind="problem", link="/library/some-book", text="Chapter 3 is missing.")
+        self.send(kind="problem", link="/convert/some-id", text="Chapter 3 is missing.")
 
         message = Message.objects.get()
-        self.assertEqual((message.kind, message.link), ("problem", "/library/some-book"))
+        self.assertEqual((message.kind, message.link), ("problem", "/convert/some-id"))
         [email] = mail.outbox
         self.assertIn("Problem reported", email.subject)
-        self.assertIn("About: /library/some-book", email.body)
-
-    def test_a_copyright_concern_needs_the_book_and_an_address(self):
-        self.assertEqual(self.send(kind="copyright", email="a@example.com", text="Mine").json()["error"], "no_link")
-        self.assertEqual(self.send(kind="copyright", link="Animal Farm", text="Mine").json()["error"], "no_email")
-        self.send(kind="copyright", link="Animal Farm", email="a@example.com", text="Mine")
-
-        self.assertEqual(Message.objects.get().kind, "copyright")
-        self.assertIn("Copyright concern", mail.outbox[0].subject)
+        self.assertIn("About: /convert/some-id", email.body)
 
     def test_a_plain_message_keeps_no_link(self):
         self.send(link="/somewhere", text="Hello")
@@ -102,14 +93,10 @@ class ReviewTests(TestCase):
     def test_the_owner_hears_what_is_waiting(self):
         Message.objects.create(text="Hello")
         Message.objects.create(text="Read already", is_read=True)
-        Suggestion.objects.create(title="Animal Farm")
-        Suggestion.objects.create(title="Done", status="accepted")
 
         # Sent before the command exits, though mail otherwise goes in the background.
         call_command("remind_review", stdout=StringIO())
 
         [email] = mail.outbox
-        self.assertEqual((email.to, email.subject), (["owner@example.com"], "[Bookflow] 2 waiting for review"))
+        self.assertEqual((email.to, email.subject), (["owner@example.com"], "[Bookflow] 1 waiting for review"))
         self.assertIn("1 unread messages:\nhttps://bookflow.test/admin/contact/message/?is_read__exact=0", email.body)
-        self.assertIn("1 new book suggestions:\nhttps://bookflow.test/admin/library/suggestion/?status__exact=new", email.body)
-        self.assertNotIn("unpublished", email.body)

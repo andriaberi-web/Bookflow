@@ -14,7 +14,6 @@ urlpatterns = [
     path("api/info", info, name="info"),
     path("api/csrf", csrf, name="csrf"),
     path("api/convert/", include("converter.urls")),
-    path("api/library/", include("library.urls")),
     path("api/contact/", include("contact.urls")),
 ]
 

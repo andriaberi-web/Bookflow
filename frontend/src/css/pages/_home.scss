@@ -357,34 +357,6 @@
     }
 }
 
-// Library and suggestions: the shelf holds four covers in a row at any width.
-
-.bf-shelf {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 96px));
-    gap: 16px;
-
-    @media (max-width: 575.98px) {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-    }
-}
-
-.bf-shelf-book {
-    width: 100%;
-    aspect-ratio: 96 / 136;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-.bf-shelf-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bf-empty);
-    color: var(--bf-muted);
-}
-
 // The banner at the bottom: get in touch
 
 .bf-banner {

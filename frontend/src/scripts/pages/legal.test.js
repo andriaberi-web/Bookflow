@@ -37,11 +37,11 @@ test('the footer links to the legal pages and to the code as it runs', async () 
 });
 
 test('a legal page has its sections, and links written in its text', async () => {
-    await renderAt('/copyright');
+    await renderAt('/terms');
 
-    expect(document.title).toBe('Copyright · Bookflow');
-    expect(screen.getByRole('heading', { name: 'If your work is here without permission' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'contact page' })).toHaveAttribute('href', '/contact?kind=copyright');
+    expect(document.title).toBe('Terms · Bookflow');
+    expect(screen.getByRole('heading', { name: 'The PDFs you convert' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'privacy page' })).toHaveAttribute('href', '/privacy');
 });
 
 test('the legal pages stay in English on the Georgian site', async () => {

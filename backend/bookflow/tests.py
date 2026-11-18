@@ -17,7 +17,7 @@ class PageTests(TestCase):
             "BACKEND": "django.template.backends.django.DjangoTemplates",
             "OPTIONS": {"loaders": [("django.template.loaders.locmem.Loader", {"index.html": "<div id=root></div>"})]},
         }]):
-            response = self.client.get("/library/some-book")
+            response = self.client.get("/convert/some-id")
 
         self.assertContains(response, "<div id=root></div>")
         self.assertIn("csrftoken", response.cookies)

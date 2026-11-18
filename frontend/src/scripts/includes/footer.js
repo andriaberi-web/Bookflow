@@ -26,7 +26,6 @@ function Footer() {
             title: t.footer.site,
             links: [
                 { to: '/convert', text: t.nav.converter },
-                { to: '/library', text: t.nav.library },
                 { to: '/contact', text: t.nav.contact },
             ],
         },

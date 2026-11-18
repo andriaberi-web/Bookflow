@@ -1,7 +1,6 @@
 # Bookflow
 
-Bookflow turns PDF books into EPUBs that read like real books, and keeps a library of
-books already converted and checked by hand. It's a Django + React site on
+Bookflow turns PDF books into EPUBs that read like real books. It's a Django + React site on
 [PDF2EPUB](https://github.com/andriaberi/PDF2EPUB), the engine that finds a book's
 chapters, paragraphs, notes and cover. The whole site is in English and Georgian, in
 light and dark.
@@ -9,10 +8,8 @@ light and dark.
 - **Converter**: upload a PDF, watch it being read, then fix the book in the editor,
   side by side with the PDF page and the EPUB page, and download the EPUB. Uploads and
   edits are deleted as soon as the person leaves.
-- **Library**: ready-made EPUBs to search, sort and download, each with its own page.
-- **Contact**: one form, with a dropdown for what it's about: a message, a problem, a book
-  to suggest (with its PDF if there is one) or a copyright concern. Each shows its own
-  fields, lands in the admin and emails the owner.
+- **Contact**: one form, with a dropdown for what it's about: a message or a problem.
+  Each lands in the admin and emails the owner.
 
 ## Running it locally
 
@@ -43,7 +40,7 @@ make dev           # Django on :8000 and React on :3000; open http://localhost:3
 | `CONVERTER_READERS` | How many books are read at once; more wait their turn (2) |
 | `PDF2EPUB_SOURCE` | Where `make install-engine` installs the engine from: a release tag, or a local folder while developing it |
 | `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | The Gmail account that sends email, and an [app password](https://myaccount.google.com/apppasswords) for it. Without a password, emails are printed to the console |
-| `NOTIFY_EMAIL` | Who hears about new suggestions and messages, and gets the daily email of what's waiting for review (the account above if left out) |
+| `NOTIFY_EMAIL` | Who hears about new messages, and gets the daily email of what's waiting for review (the account above if left out) |
 | `SOURCE_COMMIT` | The commit the footer's "Source code" link points to. Read from the checkout when the server starts if left out; set it where there is no `.git` |
 
 ## Deploying
@@ -66,7 +63,7 @@ On a Linux server with nginx, from a checkout at `/srv/bookflow` run by a `bookf
    `systemctl enable --now bookflow-review.timer`: every morning at 9, if anything is
    waiting in the admin, `NOTIFY_EMAIL` gets one email listing it, with links.
 
-nginx serves `/media/` (covers and library EPUBs) itself and passes the rest to gunicorn,
+nginx serves `/media/` (covers) itself and passes the rest to gunicorn,
 with the visitor's address in `X-Real-IP`: Django uses it to limit how often one visitor
 may upload or post a form. Run `sudo nginx -t` after changing `deploy/nginx.conf`.
 
@@ -93,21 +90,13 @@ may upload or post a form. Run `sudo nginx -t` after changing `deploy/nginx.conf
 
 Everything is in the admin, at `/admin/`:
 
-- **Library → Books**: add a book from its pdf2epub data (`.json`, so the EPUB can be
-  written again later) or from a finished EPUB. Title, author, language and cover come
-  from the data when left blank.
-- **Converter → Conversions**: "Add to the library" copies a converted, edited book into
-  the library, unpublished until you check it. Conversions made while signed in as admin
-  are kept; everyone else's go when they leave.
-- **Library → Suggestions**: suggested books, with their PDFs. "Read the PDF in the
-  converter" starts on one; "Tell them it's in the library" emails whoever suggested it,
-  in their language.
-- **Contact → Messages**: messages, problems and copyright concerns, filtered by kind.
+- **Converter → Conversions**: conversions made while signed in as admin are kept;
+  everyone else's go when they leave.
+- **Contact → Messages**: messages and problems, filtered by kind.
   The email you get for each one replies to the sender. Tick "Is read" once handled.
 
-Besides the email for each new message or suggestion, `make review` (run daily by the
-timer) emails a list of what is still waiting: unread messages, new suggestions and
-unpublished books.
+Besides the email for each new message, `make review` (run daily by the timer) emails a
+list of unread messages.
 
 ## Contributing
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './includes/navbar';
 import Footer from './includes/footer';
 import Home from './pages/home';
@@ -7,8 +7,6 @@ import Convert from './pages/convert';
 import Reading from './pages/reading';
 import Contact from './pages/contact';
 import Editor from './pages/editor';
-import Library from './pages/library';
-import LibraryBook from './pages/library-book';
 import Legal from './pages/legal';
 import NotFound from './pages/not-found';
 
@@ -30,10 +28,6 @@ function App() {
                         <Route path="/convert" element={ <Convert /> } />
                         <Route path="/convert/:id" element={ <Reading /> } />
                         <Route path="/convert/:id/edit" element={ <Editor /> } />
-                        <Route path="/library" element={ <Library /> } />
-                        <Route path="/library/:id" element={ <LibraryBook /> } />
-                        {/* The old page for suggesting a book is part of the contact page now. */}
-                        <Route path="/suggest" element={ <Navigate to="/contact?kind=book" replace /> } />
                         <Route path="/contact" element={ <Contact /> } />
                         <Route path="/terms" element={ <Legal page="terms" /> } />
                         <Route path="/privacy" element={ <Legal page="privacy" /> } />

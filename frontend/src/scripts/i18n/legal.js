@@ -1,7 +1,7 @@
 // The terms, privacy and copyright pages (pages/legal.js), in English only, whatever the
 // site's language. [text](/path) is a link.
 const legal = {
-    updated: 'Last updated 27 October 2026',
+    updated: 'Last updated 17 November 2026',
     terms: {
         title: 'Terms',
         lead: 'The rules for using Bookflow. They are short, and meant to be read.',
@@ -17,18 +17,6 @@ const legal = {
                 text: [
                     'Only upload PDFs you have the right to convert, such as books in the public domain or your own copies for your own reading. You keep every right you have to them.',
                     'A PDF is used only to make your EPUB, and is deleted once you leave its page, as the [privacy page](/privacy) says. Converting a book doesn’t make it yours to share.',
-                ],
-            },
-            {
-                heading: 'The library',
-                text: [
-                    'The library holds books that are in the public domain or shared with permission. Each book’s copyright stays with whoever holds it. Download them for your own reading unless the book is in the public domain.',
-                ],
-            },
-            {
-                heading: 'What you send us',
-                text: [
-                    'When you suggest a book with its PDF, you confirm that what you said about its rights is true. We may add the book to the library, or not.',
                 ],
             },
             {
@@ -70,13 +58,13 @@ const legal = {
             {
                 heading: 'PDFs you convert',
                 text: [
-                    'The PDF you upload, and the book read from it, are kept on the server only while its page is open. They are deleted about a minute after you leave, or within 15 minutes if the page closes without saying so. They aren’t added to the library or shared with anyone.',
+                    'The PDF you upload, and the book read from it, are kept on the server only while its page is open. They are deleted about a minute after you leave, or within 15 minutes if the page closes without saying so. They aren’t shared with anyone.',
                 ],
             },
             {
                 heading: 'What you send us',
                 text: [
-                    'A message or suggestion keeps what you wrote, the name and email you gave, the PDF if you attached one, and the site’s language at the time. It is used only to answer you, to consider the book, and to tell you if the book is added. It is kept until we delete it, and we will when you ask.',
+                    'A message keeps what you wrote and the name and email you gave. It is used only to answer you. It is kept until we delete it, and we will when you ask.',
                     'A copy of each one arrives by email, through Gmail, so Google handles it too.',
                 ],
             },
@@ -115,25 +103,13 @@ const legal = {
     },
     copyright: {
         title: 'Copyright',
-        lead: 'Who owns what on Bookflow, and what to do if your work is here without permission.',
+        lead: 'Who owns what on Bookflow.',
         sections: [
             {
                 heading: 'The site',
                 text: [
                     '© 2026 Andria Beridze. Bookflow is free software under the GNU AGPL, version 3 or later. Its source, at the exact version running here, is linked in the footer as “Source code”.',
                     'Anything built on Bookflow must show its users this credit: Based on Bookflow by Andria Beridze (https://github.com/andriaberi-web/Bookflow). See the [NOTICE](https://github.com/andriaberi-web/Bookflow/blob/main/NOTICE).',
-                ],
-            },
-            {
-                heading: 'The books',
-                text: [
-                    'Every book keeps its own copyright, held by its author, translator or publisher. The library holds only books in the public domain or shared with permission.',
-                ],
-            },
-            {
-                heading: 'If your work is here without permission',
-                text: [
-                    'Tell us through the [contact page](/contact?kind=copyright): which book, who you are, and that you hold its rights or act for whoever does. We take the book down while we look into it, and answer you by email.',
                 ],
             },
             {

@@ -5,13 +5,12 @@ class Message(models.Model):
     KIND_CHOICES = [
         ("message",   "Message"),
         ("problem",   "Problem"),
-        ("copyright", "Copyright concern"),
     ]
 
     kind       = models.CharField(max_length=10, choices=KIND_CHOICES, default="message")
     name       = models.CharField(max_length=200, blank=True)
     email      = models.EmailField(blank=True, help_text="To answer them")
-    # The page or book a problem or copyright concern is about
+    # The page or book a problem is about
     link       = models.CharField(max_length=500, blank=True)
     text       = models.TextField()
 

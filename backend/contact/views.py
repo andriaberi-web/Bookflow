@@ -1,7 +1,6 @@
 from bookflow import mail, public
 from bookflow.responses import error
 from django.views.decorators.http import require_POST
-from library.views import suggestion_create
 
 from .models import Message
 
@@ -11,16 +10,12 @@ KINDS = {kind for kind, _ in Message.KIND_CHOICES}
 SUBJECTS = {
     "message":   "Message from {sender}",
     "problem":   "Problem reported by {sender}",
-    "copyright": "Copyright concern from {sender}",
 }
 
 
-# Everything the contact page sends: a suggested book, or a message of some kind.
 @require_POST
 def contact_create(request):
     kind = request.POST.get("kind", "message")
-    if kind == "book":
-        return suggestion_create(request)
     if kind not in KINDS:
         return error("bad_kind", "Not something the contact page sends")
     return message_create(request, kind)
@@ -37,11 +32,6 @@ def message_create(request, kind):
         return error("bad_email", "That isn't an email address")
     if kind == "message":
         fields["link"] = ""
-    # A copyright concern needs an answer, and to know which book.
-    if kind == "copyright" and not fields["link"]:
-        return error("no_link", "Say which book")
-    if kind == "copyright" and not fields["email"]:
-        return error("no_email", "An email address is needed to answer")
 
     message = Message.objects.create(kind=kind, **fields)
     sender = message.name or message.email or "Someone"

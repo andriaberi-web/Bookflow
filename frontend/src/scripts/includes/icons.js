@@ -65,15 +65,3 @@ export const Close = (props) => (
 export const ChevronRight = (props) => (
     <Icon { ...props }><path d="m9 6 6 6-6 6" /></Icon>
 );
-
-export const Plus = (props) => (
-    <Icon strokeWidth={ 2.2 } { ...props }><path d="M12 5v14" /><path d="M5 12h14" /></Icon>
-);
-
-export const Search = (props) => (
-    <Icon { ...props }><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></Icon>
-);
-
-export const BookIcon = (props) => (
-    <Icon { ...props }><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6.5A2.5 2.5 0 0 0 4 21.5z" /><path d="M20 17v4H6.5" /></Icon>
-);

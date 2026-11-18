@@ -1,26 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getBooks, getInfo } from '../helpers/api';
+import { getInfo } from '../helpers/api';
 import { ENGINE_URL } from '../helpers/links';
 import { useSettings } from '../helpers/settings';
-import { ArrowRight, BookIcon, Plus } from '../includes/icons';
+import { ArrowRight } from '../includes/icons';
 import { usePageTitle } from '../includes/page';
-
-const SHELF_SIZE = 4;
 
 function Home() {
     const { t, lang } = useSettings();
     usePageTitle();
-    const [books, setBooks] = useState([]);
     const [converted, setConverted] = useState(0);
 
     useEffect(() => {
-        getBooks().then(setBooks).catch(() => {});
         getInfo().then((info) => setConverted(info.converted || 0)).catch(() => {});
     }, []);
-
-    const shelf = books.filter((book) => book.cover_url).slice(0, SHELF_SIZE);
-    const empty = SHELF_SIZE - shelf.length;
 
     return (
         <>
@@ -37,7 +30,6 @@ function Home() {
                                 <Link to="/convert" className="btn btn-cobalt btn-lg px-4 py-3 d-inline-flex align-items-center gap-2">
                                     { t.home.convert } <ArrowRight />
                                 </Link>
-                                <Link to="/library" className="btn btn-ghost btn-lg px-4 py-3">{ t.home.browse }</Link>
                             </div>
                             {/* Shown once there's something to count. */}
                             { converted > 0 && (
@@ -86,33 +78,6 @@ function Home() {
                         </div>
                         <div className="col-lg-7">
                             <FixExample t={ t } />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="container bf-section">
-                <div className="row g-4">
-                    <div className="col-lg-7">
-                        <div className="bf-panel h-100 p-4 p-lg-5 d-flex flex-column bf-center-stacked">
-                            <div className="bf-eyebrow mb-2">{ t.nav.library }</div>
-                            <h2 className="bf-display bf-card-title mb-3">{ t.home.libraryTitle }</h2>
-                            <p className="bf-muted mb-4">{ t.home.libraryText }</p>
-                            <div className="bf-shelf mb-4" aria-hidden="true">
-                                { shelf.map((book) => <img key={ book.id } src={ book.cover_url } alt="" className="bf-shelf-book" />) }
-                                { Array.from({ length: empty }, (_, i) => (
-                                    <div key={ i } className="bf-shelf-book bf-shelf-empty"><BookIcon size={ 28 } /></div>
-                                )) }
-                            </div>
-                            <div className="mt-auto"><Link to="/library" className="btn btn-ghost px-4 py-2">{ t.home.browse }</Link></div>
-                        </div>
-                    </div>
-                    <div className="col-lg-5">
-                        <div className="bf-panel-soft h-100 p-4 p-lg-5 d-flex flex-column bf-center-stacked">
-                            <span className="bf-icon-tile mb-4"><Plus size={ 24 } /></span>
-                            <h2 className="bf-display bf-card-title mb-3">{ t.home.suggestTitle }</h2>
-                            <p className="mb-4">{ t.home.suggestText }</p>
-                            <div className="mt-auto"><Link to="/contact?kind=book" className="btn btn-cobalt px-4 py-2">{ t.contact.kinds.book }</Link></div>
                         </div>
                     </div>
                 </div>

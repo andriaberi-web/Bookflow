@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import App from './app';
 import { SettingsProvider } from './helpers/settings';
 
-// Waits for the page's own requests (the home page loads library covers) to settle.
+// Waits for the page's own requests to settle.
 async function renderAt(path) {
     await act(async () => {
         render(
@@ -87,9 +87,9 @@ test('picking a page in the phone menu goes there and closes the menu', async ()
     await renderAt('/');
     fireEvent.click(screen.getByRole('button', { name: 'Menu' }));
     const menu = screen.getByRole('dialog', { name: 'Menu' });
-    await act(async () => fireEvent.click(within(menu).getByRole('link', { name: /Library/ })));
+    await act(async () => fireEvent.click(within(menu).getByRole('link', { name: /Contact/ })));
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Library');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Get in touch.');
 });
 
 test('an unknown address shows the not-found page', async () => {

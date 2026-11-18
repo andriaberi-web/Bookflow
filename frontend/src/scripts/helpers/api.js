@@ -55,10 +55,6 @@ export function getInfo() {
     return getJson('/api/info');
 }
 
-export function getBooks() {
-    return getJson('/api/library/');
-}
-
 // Posts the form, telling onProgress the share sent so far (0 to 1). Uses XHR, as fetch
 // can't report upload progress.
 async function upload(url, form, onProgress = () => {}) {
@@ -84,10 +80,6 @@ async function upload(url, form, onProgress = () => {}) {
     });
 }
 
-export function getLibraryBook(id) {
-    return getJson(`/api/library/${id}`);
-}
-
 export function uploadPdf(file, onProgress) {
     const form = new FormData();
     form.append('pdf', file);
@@ -101,8 +93,7 @@ function formOf(fields) {
     return form;
 }
 
-// Sends what the contact page holds, by its kind: a message, or a suggested book with
-// its PDF if there is one.
+// Sends what the contact page holds.
 export function sendContact(fields, onProgress) {
     return upload('/api/contact/', formOf(fields), onProgress);
 }

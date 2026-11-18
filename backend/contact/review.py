@@ -2,7 +2,6 @@
 
 from bookflow import mail
 from django.conf import settings
-from library.models import Book, Suggestion
 
 from .models import Message
 
@@ -12,8 +11,6 @@ def waiting() -> list[tuple[str, int, str]]:
     admin = f"{settings.SITE_URL}/admin"
     found = [
         ("unread messages", Message.objects.filter(is_read=False).count(), f"{admin}/contact/message/?is_read__exact=0"),
-        ("new book suggestions", Suggestion.objects.filter(status="new").count(), f"{admin}/library/suggestion/?status__exact=new"),
-        ("unpublished books to check", Book.objects.filter(is_published=False).count(), f"{admin}/library/book/?is_published__exact=0"),
     ]
     return [item for item in found if item[1]]
 

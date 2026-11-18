@@ -20,7 +20,7 @@ commit if you'd like to be.
 ## What counts
 
 Anything that lets someone read, change or delete what isn't theirs: another visitor's
-conversion or PDF, the admin, messages and suggestions people sent, or the server's
+conversion or PDF, the admin, messages people sent, or the server's
 files. Also ways around the upload checks or the limit on how often one visitor may post.
 
 Not counted: floods of traffic, reports from automated scanners with no way shown to use

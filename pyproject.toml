@@ -3,7 +3,7 @@
 [project]
 name = "bookflow"
 version = "1.0.0"
-description = "Turns PDF books into EPUBs that read like real books, and keeps a library of them"
+description = "Turns PDF books into EPUBs that read like real books"
 readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE", "NOTICE"]
