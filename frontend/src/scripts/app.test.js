@@ -24,15 +24,20 @@ beforeEach(() => {
 test('the site opens straight on the converter', async () => {
     await renderAt('/');
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Drop in a book.');
-    expect(screen.queryByRole('contentinfo')).toBeNull();
 });
 
-test('there is no language switch, but a remembered language still translates the page', async () => {
+test('the footer shows the installed PDF2EPUB version', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ engine: '1.1.0+g1a2b3c4' }) }));
+    await renderAt('/');
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('Uses PDF2EPUB 1.1.0');
+});
+
+test('the page is in English, even where Georgian was picked before', async () => {
     localStorage.setItem('lang', 'ka');
     await renderAt('/');
     expect(screen.queryByRole('button', { name: 'ქა' })).toBeNull();
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('ატვირთე წიგნი.');
-    expect(document.documentElement.lang).toBe('ka');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Drop in a book.');
+    expect(document.documentElement.lang).toBe('en');
 });
 
 test('the theme button switches between light and dark', async () => {

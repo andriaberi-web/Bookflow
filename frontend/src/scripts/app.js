@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import Footer from './includes/footer';
 import Navbar from './includes/navbar';
 import Convert from './pages/convert';
 import Reading from './pages/reading';
@@ -28,6 +29,7 @@ function App() {
                     </Routes>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 }

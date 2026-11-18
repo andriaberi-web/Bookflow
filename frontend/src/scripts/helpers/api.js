@@ -82,6 +82,10 @@ export function uploadPdf(file, onProgress) {
     return upload('/api/convert/', form, onProgress);
 }
 
+export function getInfo() {
+    return getJson('/api/info');
+}
+
 export function getConversion(id) {
     return getJson(`/api/convert/${id}`);
 }

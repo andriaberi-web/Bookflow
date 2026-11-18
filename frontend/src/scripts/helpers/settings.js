@@ -3,6 +3,8 @@ import en from '../i18n/en';
 import ka from '../i18n/ka';
 
 const DICTIONARIES = { en, ka };
+// Georgian stays translated, but there's no switch to it.
+const LANG = 'en';
 
 // Storage can be blocked (private windows), so every read and write may fail.
 function load(key, fallback) {
@@ -26,13 +28,11 @@ function systemTheme() {
 const SettingsContext = createContext(null);
 
 export function SettingsProvider({ children }) {
-    const [lang, setLang] = useState(() => load('lang', 'en'));
     const [theme, setTheme] = useState(() => load('theme', systemTheme()));
 
     useEffect(() => {
-        document.documentElement.lang = lang;
-        save('lang', lang);
-    }, [lang]);
+        document.documentElement.lang = LANG;
+    }, []);
 
     useEffect(() => {
         document.documentElement.setAttribute('data-bs-theme', theme);
@@ -44,8 +44,8 @@ export function SettingsProvider({ children }) {
     }, []);
 
     const value = useMemo(
-        () => ({ lang, setLang, theme, toggleTheme, t: DICTIONARIES[lang] || en }),
-        [lang, theme, toggleTheme]
+        () => ({ lang: LANG, theme, toggleTheme, t: DICTIONARIES[LANG] }),
+        [theme, toggleTheme]
     );
 
     return <SettingsContext.Provider value={ value }>{ children }</SettingsContext.Provider>;
